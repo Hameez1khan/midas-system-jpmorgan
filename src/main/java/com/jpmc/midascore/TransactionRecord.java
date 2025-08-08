@@ -25,6 +25,8 @@ public class TransactionRecord {
 
     private LocalDateTime timestamp;
 
+    private float incentive;
+
 
     public Long getId() {
         return id;
@@ -65,4 +67,9 @@ public class TransactionRecord {
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
+
+
+    public float getIncentive() {return incentive;}
+
+    public void setIncentive(float incentive) {this.incentive = incentive;}
 }
