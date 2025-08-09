@@ -3,12 +3,13 @@ package com.jpmc.midascore;
 import com.jpmc.midascore.entity.UserRecord;
 import com.jpmc.midascore.foundation.Transaction;
 import com.jpmc.midascore.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@ConditionalOnProperty(name = "kafka.enabled", havingValue = "true", matchIfMissing = true)
 public class KafkaTransactionListener {
 
     private final UserRepository userRepository;
@@ -35,12 +36,10 @@ public class KafkaTransactionListener {
             return;
         }
 
-        // Call Incentive API
         String url = "http://localhost:8080/incentive";
         Incentive response = restTemplate.postForObject(url, transaction, Incentive.class);
         float incentiveAmount = response != null ? response.getAmount() : 0.0f;
 
-        // Apply transaction and incentive
         sender.setBalance(sender.getBalance() - transaction.getAmount());
         recipient.setBalance(recipient.getBalance() + transaction.getAmount() + incentiveAmount);
 
